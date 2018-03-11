@@ -1,0 +1,46 @@
+{
+    "Sensor CSV Column Names": {
+        "2": [
+            "Timestamp",
+            "Unknown",
+            "Percentage",
+            "Voltage",
+            "Temperature"
+        ],
+        "3": [
+            "Timestamp",
+            "Latitude",
+            "Logitude",
+            "Altitude",
+            "Speed",
+            "Bearing",
+            "Accuracy"
+        ],
+        "4": [
+            "Timestamp",
+            "Type",
+            "Confidence"
+        ],
+        "7": [
+            "Timestamp",
+            "Unknown",
+            "Bx",
+            "By",
+            "Bz"
+        ],
+        "8": [
+            "Timestamp",
+            "Unknown",
+            "Light Intensity"
+        ],
+        "10": [
+            "Timestamp",
+            "Unknown",
+            "Proximity"
+        ]
+    },
+    "High Freq Data Dir": "/Users/zxxia/Research/zhengxuxia-data/raw",
+    "Low Freq Data Dir": "/Users/zxxia/Research/zhengxuxia-data/lowfrequencydata",
+    "Datasources": "/Users/zxxia/Research/zhengxuxia-data/datasources.csv",
+    "Groundtruths": "/Users/zxxia/Research/zhengxuxia-data/IOLabel - Kevin Xia.csv"
+}
