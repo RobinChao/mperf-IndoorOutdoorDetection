@@ -1,13 +1,13 @@
 {
     "Sensor CSV Column Names": {
-        "2": [
+        "BATTERY": [
             "Timestamp",
-            "Unknown",
+            "Timezone Offset",
             "Percentage",
             "Voltage",
             "Temperature"
         ],
-        "3": [
+        "LOCATION": [
             "Timestamp",
             "Latitude",
             "Logitude",
@@ -16,31 +16,31 @@
             "Bearing",
             "Accuracy"
         ],
-        "4": [
+        "ACTIVITY_TYPE": [
             "Timestamp",
             "Type",
             "Confidence"
         ],
-        "7": [
+        "COMPASS": [
             "Timestamp",
-            "Unknown",
+            "Timezone Offset",
             "Bx",
             "By",
             "Bz"
         ],
-        "8": [
+        "AMBIENT_LIGHT": [
             "Timestamp",
-            "Unknown",
+            "Timezone Offset",
             "Light Intensity"
         ],
-        "10": [
+        "PROXIMITY": [
             "Timestamp",
-            "Unknown",
+            "Timezone Offset",
             "Proximity"
         ]
     },
-    "High Freq Data Dir": "/Users/zxxia/Research/zhengxuxia-data/raw",
-    "Low Freq Data Dir": "/Users/zxxia/Research/zhengxuxia-data/lowfrequencydata",
-    "Datasources": "/Users/zxxia/Research/zhengxuxia-data/datasources.csv",
-    "Groundtruths": "/Users/zxxia/Research/zhengxuxia-data/IOLabel - Kevin Xia.csv"
+    "High Freq Data Dir": "/Users/zxxia/Research/bharath-data/raw",
+    "Low Freq Data Dir": "/Users/zxxia/Research/bharath-data/lowfreqdata",
+    "Datasources": "/Users/zxxia/Research/bharath-data/datasources.csv",
+    "Groundtruths": "/Users/zxxia/Research/bharath-data/IOLabel - Bharath.csv"
 }

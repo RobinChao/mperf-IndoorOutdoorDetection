@@ -12,17 +12,17 @@ import pytz
 import gzip
 import os
 import json
+import zlib
 
 class DataLoader:
     def __init__(self):
-        with open('/Users/zxxia/Research/src/config/config.json') as f:
+        with open('../config/config.json') as f:
             config = json.load(f)
         self.datasources = config['Datasources']
         self.groundtruths = config['Groundtruths']
         self.high_freq_data_dir = config['High Freq Data Dir']
         self.low_freq_data_dir = config['Low Freq Data Dir']
         self.column_names = config['Sensor CSV Column Names']
-
         self.dsid_type_dict, self.type_dsid_dict = self.__load_datasources()
 
     def __load_datasources(self):
@@ -37,12 +37,13 @@ class DataLoader:
         return dsid_type_dict, type_dsid_dict
 
     def load_groundtruth(self):
-        tz = pytz.timezone("America/Los_Angeles")
+        ts_dict = {'Start Timestamp': ['Date', 'Start Time', 'Timezone'],
+                   'End Timestamp': ['Date', 'End Time', 'Timezone']}
+
         df = pd.read_csv(self.groundtruths, 
-                         parse_dates={'Start Timestamp': ['Date', 'Start Time'],
-                                      'End Timestamp': ['Date', 'End Time']},
-                         date_parser=lambda date, t:
-                         tz.localize(datetime.strptime(date+' '+t, 
+                         parse_dates=ts_dict,
+                         date_parser=lambda date, t, tz:
+                         pytz.timezone(tz).localize(datetime.strptime(date+' '+t, 
                             '%m/%d/%Y %H:%M')))
         return df
 
@@ -52,8 +53,8 @@ class DataLoader:
         prefix = sid + '_'
         for file in os.listdir(self.low_freq_data_dir):
             if file.startswith(prefix):
-                return self.__load_data_from_file(self.low_freq_data_dir + '/' + file,
-                                           self.column_names[sid])
+                filename = self.low_freq_data_dir + '/' + file
+                return self.__load_data(filename, self.column_names[sensor_type])
 
     def load_high_freq_data(self, sensor_type: str, d):
         sid = self.type_dsid_dict[sensor_type]
@@ -64,11 +65,12 @@ class DataLoader:
         results = []
         for file in file_list:
             if file.startswith(date_str):
-                df = self.__load_data_from_file(data_dir + '/' + file, self.column_names[sid])
+                filename = data_dir + '/' + file
+                df = self.__load_data(filename, self.column_names[sensor_type])
                 results.append(df)
         return pd.concat(results)
 
-    def __load_data_from_file(self, filename: str, column_names: list):
+    def __load_data(self, filename: str, column_names: list):
 
         ''' Load data from a file
         Key arguments:
@@ -88,6 +90,8 @@ class DataLoader:
         if type(column_names) is not list:
             raise TypeError('column_names must be a list.')
 
+        print('Loading {}...'.format(filename))
+
         if filename[-4:] == '.csv':
             df = pd.read_csv(filename,
                              header=None,
@@ -105,6 +109,8 @@ class DataLoader:
                                      date_parser=lambda x:
                                          pd.to_datetime(x, utc=True, box=True, unit='ms'))
             except EOFError:
+                return None
+            except zlib.error:
                 return None
         else:
             raise ValueError("filename must be in format of '.csv' or '.csv.gz'.")
@@ -171,5 +177,4 @@ def filter_data(df,
             for ts in df['Timestamp']])
 
     return df[constraints.values]
-
 
