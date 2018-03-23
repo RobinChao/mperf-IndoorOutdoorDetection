@@ -37,6 +37,13 @@
             "Timestamp",
             "Timezone Offset",
             "Proximity"
+        ],
+        "BEACON": [
+            "Timestamp",
+            "Timezone Offset",
+            "Distance",
+            "RSSI",
+            "TX"
         ]
     },
     "High Freq Data Dir": "/Users/zxxia/Research/bharath-data/raw",

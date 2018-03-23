@@ -5,14 +5,14 @@ Created on Wed Feb 21 13:29:37 2018
 
 @author: zxxia
 """
-
-import pandas as pd
-from datetime import datetime, time
-import pytz
-import gzip
 import os
-import json
+from datetime import datetime, time
 import zlib
+import gzip
+import json
+import pandas as pd
+import pytz
+
 
 class DataLoader:
     def __init__(self):
@@ -23,18 +23,22 @@ class DataLoader:
         self.high_freq_data_dir = config['High Freq Data Dir']
         self.low_freq_data_dir = config['Low Freq Data Dir']
         self.column_names = config['Sensor CSV Column Names']
-        self.dsid_type_dict, self.type_dsid_dict = self.__load_datasources()
+        self.dsid_type_dict, self.type_dsid_dict, _ = self.load_datasources()
 
-    def __load_datasources(self):
+    def load_datasources(self):
         df = pd.read_csv(self.datasources)
         dsid_type_dict = dict()
         type_dsid_dict = dict()
+        beacon_id_set = set()
         for index, row in df.iterrows():
             if row['platform_type'] == 'PHONE':
                 dsid_type_dict[row['ds_id']] = row['datasource_type']
                 type_dsid_dict[row['datasource_type']] = str(row['ds_id'])
+            elif row['platform_type'] == 'BEACON':
+                beacon_id_set.add(str(row['ds_id']))
 
-        return dsid_type_dict, type_dsid_dict
+
+        return dsid_type_dict, type_dsid_dict, beacon_id_set
 
     def load_groundtruth(self):
         ts_dict = {'Start Timestamp': ['Date', 'Start Time', 'Timezone'],
@@ -55,12 +59,21 @@ class DataLoader:
             if file.startswith(prefix):
                 filename = self.low_freq_data_dir + '/' + file
                 return self.__load_data(filename, self.column_names[sensor_type])
+        return None
 
-    def load_high_freq_data(self, sensor_type: str, d):
-        sid = self.type_dsid_dict[sensor_type]
+    def load_high_freq_data(self, sensor_type: str, d, sensor_id: str=None):
+        if sensor_type == 'BEACON':
+            sid = sensor_id
+        else:
+            sid = self.type_dsid_dict[sensor_type]
         date_str = d.strftime("%Y%m%d")
         data_dir = self.high_freq_data_dir + '/raw' + sid
-        file_list = os.listdir(data_dir)
+        
+        try:
+            file_list = os.listdir(data_dir)
+        except FileNotFoundError:
+            return None
+        
         file_list.sort()
         results = []
         for file in file_list:
@@ -68,6 +81,8 @@ class DataLoader:
                 filename = data_dir + '/' + file
                 df = self.__load_data(filename, self.column_names[sensor_type])
                 results.append(df)
+        if not results:
+            return None
         return pd.concat(results)
 
     def __load_data(self, filename: str, column_names: list):
