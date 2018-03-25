@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This script takes the database created in mcerebrum cell phone app as an
+# argument and extract all the low frequency data. It also creates a csv
+# file which contains the meta-data of all datasources.
+
 # Take the 1st arguemnt as the database file.
 DATABASE=$1
 
