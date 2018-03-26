@@ -14,11 +14,11 @@ import numpy as np
 # this finds our json files
 
 # input directory (the folder I told you to remember)
-path = '/Users/zxxia/Research/field-data'
+DATA_PATH = '/Users/zxxia/Research/field-data'
 
 # output directory where the data will be saved
-output = '/Users/zxxia/Research/field-data-output'
-participant_dir = list(os.listdir(path))
+OUTPUT_PATH = '/Users/zxxia/Research/field-data-output'
+participant_dir = list(os.listdir(DATA_PATH))
 
 
 def list_all_frames(filenames, col_count):
@@ -38,7 +38,7 @@ def list_all_frames(filenames, col_count):
 for participant in participant_dir:
     if participant.startswith('.'):
         continue
-    path_to_date = path + '/' + str(participant)
+    path_to_date = DATA_PATH + '/' + str(participant)
     date_dir = list(os.listdir(path_to_date))
 
     if date_dir == []:
@@ -46,7 +46,7 @@ for participant in participant_dir:
     for date in date_dir:
         if date.startswith('.'):
             continue
-        os.makedirs(output + str(participant) + '/' + str(date))
+        os.makedirs(OUTPUT_PATH + str(participant) + '/' + str(date))
 
         list_activity_type = []
         list_ambient_light = []
@@ -127,24 +127,24 @@ for participant in participant_dir:
 
         if frames_activity_type:
             df_activity_type = pd.concat(frames_activity_type).sort_values(by=['0'])
-            np.savetxt(output + str(participant) + '/' + str(date) + '/activity_type.csv',
+            np.savetxt(OUTPUT_PATH + str(participant) + '/' + str(date) + '/activity_type.csv',
                        df_activity_type.as_matrix(), delimiter=',', fmt='%13d')
             print(participant, date, 'activity_type')
         if frames_ambient_light:
             df_ambient_light = pd.concat(frames_ambient_light).sort_values(by=['0'])
-            np.savetxt(output + str(participant) + '/' + str(date) + '/ambient_light.csv',
+            np.savetxt(OUTPUT_PATH + str(participant) + '/' + str(date) + '/ambient_light.csv',
                        df_ambient_light.as_matrix(), delimiter=',', fmt='%13d')
             print(participant, date, 'ambient light')
         if frames_battery:
             df_battery = pd.concat(frames_battery).sort_values(by=['0'])
             try:
-                np.savetxt(output + str(participant) + '/' + str(date) + '/battery.csv',
+                np.savetxt(OUTPUT_PATH + str(participant) + '/' + str(date) + '/battery.csv',
                            df_battery.as_matrix(), delimiter=',', fmt='%13d')
             except ValueError:
                 print(df_battery)
             print(participant, date, 'battery')
         if frames_location:
             df_location = pd.concat(frames_location).sort_values(by=['0'])
-            np.savetxt(output + str(participant) + '/' + str(date) + '/location.csv',
+            np.savetxt(OUTPUT_PATH + str(participant) + '/' + str(date) + '/location.csv',
                        df_location.as_matrix(), delimiter=',', fmt='%.15f')
             print(participant, date, 'location')
