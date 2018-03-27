@@ -21,5 +21,5 @@
 src/feature_extraction.py:  
 extract_features, extact_features_tw
 
-src/SVM_training.ipynb: 
+src/SVM_training.ipynb:  
 normalize, predict_labels
