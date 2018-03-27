@@ -17,4 +17,9 @@
 8. Work 1 Beacon (BEACON--org.md2k.beacon--BEACON--WORK 1)
 9. Work 2 Beacon (BEACON--org.md2k.beacon--BEACON--WORK 2)
 
+## Important functions
+feature_extraction.py:  
+extract_features, extact_features_tw
 
+SVM_training.ipynb
+normalize, predict_labels

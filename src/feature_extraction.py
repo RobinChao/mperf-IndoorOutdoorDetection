@@ -73,8 +73,18 @@ def data_in_tw(dataframe, start, end):
 
 
 def extract_features_from_tw1(streams, timestamp) -> Dict:
-    feature = {}
+    '''
+    Extract features from sensor streams within a time window.
+    Input 
+        streams: all sensor streams needed.
+        (Location, Activity Type, Ambient Light, Battery, Car Beacon, Home
+        Beacon, Office Beacon, Work1 Beacon, Work2 Beacon)
 
+        timestamp: the start timestamp of a time window
+    Output:
+        features needed in form of dictionary
+    ''' 
+    feature = {}
     # Select features on time of the day
     tz = pytz.timezone("America/Los_Angeles")
 
@@ -215,6 +225,16 @@ def extract_features_from_tw(streams, timestamp) -> Dict:
 '''
 
 def extract_features(streams, start_t, end_t, t_win_s) -> List:
+    '''
+    Extract features within a time period.
+    Input:
+        streams - Sensor streams from the beginning of installation of mCerebrum.
+        start_t: Event start time.
+        end_t: Event end time.
+        t_win_s: Time window in unit of second.
+    Output:
+        A list of features for each time window.
+    '''
     t1 = start_t
     t2 = t1 + timedelta(seconds=t_win_s)
 
