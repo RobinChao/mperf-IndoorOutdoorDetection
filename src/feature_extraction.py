@@ -103,9 +103,9 @@ def extract_features_from_tw1(streams, timestamp) -> Dict:
     #feature['Mean Proximity'] = data['Proximity'].mean()
 
     # Select features from compass data
-    data = streams['Compass'][['Bx', 'By', 'Bz']]
-    compass_var = (np.sqrt(np.square(data).sum(axis=1))).var()
-    feature['Magnetic Field Variance'] = compass_var
+    # data = streams['Compass'][['Bx', 'By', 'Bz']]
+    # compass_var = (np.sqrt(np.square(data).sum(axis=1))).var()
+    # feature['Magnetic Field Variance'] = compass_var
 
     # Select features from location data
     data = streams['Location']
@@ -128,13 +128,23 @@ def extract_features_from_tw1(streams, timestamp) -> Dict:
         feature[ACTIVITY_TYPES[data['Type'].mode().iloc[0]]] = 1
 
     # Select features from ble beacons
-    data = streams['Beacon']
-    feature['Beacon'] = 0
+    data = streams['Car Beacon']
+    feature['Car Beacon'] = 0
     if data is not None and data.shape[0] > 0:
-        feature['Beacon'] = 1
+        feature['Car Beacon'] = 1
 
+    feature['Indoor Beacon'] = 0
+    data_work1_beacon = streams['Work1 Beacon']
+    data_work2_beacon = streams['Work2 Beacon']
+    data_home_beacon = streams['Home Beacon']
+    data_office_beacon = streams['Office Beacon']
+    if ((data_work1_beacon is not None and data_work1_beacon.shape[0] > 0) or
+        (data_work2_beacon is not None and data_work2_beacon.shape[0] > 0) or
+        (data_home_beacon is not None and data_home_beacon.shape[0] > 0) or 
+        (data_office_beacon is not None and data_office_beacon.shape[0] > 0)):
+        feature['Indoor Beacon'] = 1
     return feature
-
+'''
 def extract_features_from_tw(streams, timestamp) -> Dict:
     feature = {}
 
@@ -202,6 +212,7 @@ def extract_features_from_tw(streams, timestamp) -> Dict:
 
 
     return feature
+'''
 
 def extract_features(streams, start_t, end_t, t_win_s) -> List:
     t1 = start_t
@@ -214,10 +225,13 @@ def extract_features(streams, start_t, end_t, t_win_s) -> List:
         data = {}
         data['Battery'] = data_in_tw(streams['Battery'], t1, t2)
         data['Location'] = data_in_tw(streams['Location'], t1, t2)
-        data['Compass'] = data_in_tw(streams['Compass'], t1, t2)
         data['Activity'] = data_in_tw(streams['Activity'], t1, t2)
         data['Ambient Light'] = data_in_tw(streams['Ambient Light'], t1, t2)
-        data['Beacon'] = data_in_tw(streams['Beacon'], t1, t2)
+        data['Car Beacon'] = data_in_tw(streams['Car Beacon'], t1, t2)
+        data['Home Beacon'] = data_in_tw(streams['Home Beacon'], t1, t2)
+        data['Office Beacon'] = data_in_tw(streams['Office Beacon'], t1, t2)
+        data['Work1 Beacon'] = data_in_tw(streams['Work1 Beacon'], t1, t2)
+        data['Work2 Beacon'] = data_in_tw(streams['Work2 Beacon'], t1, t2)
 
         feature = extract_features_from_tw1(data, t1)
         features.append(feature)

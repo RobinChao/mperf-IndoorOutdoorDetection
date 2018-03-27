@@ -35,6 +35,7 @@ class DataLoader:
                 dsid_type_dict[row['ds_id']] = row['datasource_type']
                 type_dsid_dict[row['datasource_type']] = str(row['ds_id'])
             elif row['platform_type'] == 'BEACON':
+                type_dsid_dict[row['datasource_type'] + '_' + row['platform_id']] = str(row['ds_id'])
                 beacon_id_set.add(str(row['ds_id']))
 
 
@@ -79,7 +80,10 @@ class DataLoader:
         for file in file_list:
             if file.startswith(date_str):
                 filename = data_dir + '/' + file
-                df = self.__load_data(filename, self.column_names[sensor_type])
+                if sensor_type.startswith('BEACON'):
+                    df = self.__load_data(filename, self.column_names['BEACON'])
+                else:
+                    df = self.__load_data(filename, self.column_names[sensor_type])
                 results.append(df)
         if not results:
             return None
