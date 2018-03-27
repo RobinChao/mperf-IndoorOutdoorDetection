@@ -23,3 +23,6 @@ extract_features, extact_features_tw
 
 src/SVM_training.ipynb:  
 normalize, predict_labels
+
+## Classifier Object
+clf/io.model
